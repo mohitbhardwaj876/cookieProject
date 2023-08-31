@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cookie Management</title>
+</head>
+<body>
+<iframe width="930" height="523" src="https://www.youtube.com/embed/UaukXy49af8"></iframe>
+
+<script>
+(function(w,d,s,l,i){
+  w[l]=w[l]||[];
+  w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
+  var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+  j.async=true;
+  j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+  f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-N6M7RBT');
+</script>
+
+<button id="deleteButton">Delete</button>
+<button id="retrieveButton">Retrieve</button>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.getElementById("deleteButton").addEventListener("click", deleteCookies);
+  document.getElementById("retrieveButton").addEventListener("click", retrieveCookies);
+
+  function deleteCookies() {
+    // Store existing cookies in local storage before deleting
+    const cookies = document.cookie.split("; ");
+    const cookieData = {};
+    for (const cookie of cookies) {
+      const [name, value] = cookie.split("=");
+      cookieData[name] = value;
+    }
+    localStorage.setItem("deletedCookies", JSON.stringify(cookieData));
+
+    // Delete cookies
+    const pastDate = new Date(1970, 1, 1).toUTCString();
+    const cookieKeys = Object.keys(cookieData);
+    for (const key of cookieKeys) {
+      document.cookie = `${key}=; expires=${pastDate}`;
+    }
+    alert("Cookies deleted!");
+  }
+
+  function retrieveCookies() {
+    const deletedCookiesData = localStorage.getItem("deletedCookies");
+    if (deletedCookiesData) {
+      const deletedCookies = JSON.parse(deletedCookiesData);
+      const currentDate = new Date();
+      const futureDate = new Date(currentDate.getFullYear() + 1, currentDate.getMonth()).toUTCString();
+
+      // Restore deleted cookies
+      const cookieKeys = Object.keys(deletedCookies);
+      for (const key of cookieKeys) {
+        document.cookie = `${key}=${deletedCookies[key]}; expires=${futureDate}`;
+      }
+      alert("Deleted cookies retrieved!");
+    } else {
+      alert("No deleted cookies found in local storage.");
+    }
+  }
+});
+</script>
+</body>
+</html>
